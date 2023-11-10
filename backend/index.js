@@ -1,15 +1,15 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const routesHandler = require('./routes/handler.js');
-require('dotenv/config');
-
 const app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use('/', routesHandler);
+const productRoutes = require('./routes/productRoutes'); // Ensure the path is correct
 
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
-const PORT = process.env.PORT || 5000; // backend routing port
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+// Correctly use the product routes
+app.use('/products', productRoutes);
+
+const port = 4000; // Or any other preferred port
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
