@@ -1,11 +1,19 @@
-// Importing required modules
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser'); // Import body-parser
+
 const app = express();
 const productRoutes = require('./routes/productRoutes');
 
-// Using cors middleware to handle CORS headers
+// Use cors middleware to handle CORS headers
 app.use(cors());
+
+// Use body-parser middleware to parse JSON in the request body
+app.use(bodyParser.json());
+
+const session = require('express-session');
+app.use(session({ secret: '1234567890abcdefghijklmnopqrstuvwxyz', resave: true, saveUninitialized: true }));
+
 
 // Handling a simple GET request for the root route
 app.get('/', (req, res) => {

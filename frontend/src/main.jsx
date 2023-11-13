@@ -6,17 +6,13 @@ import App from './App';
 import './index.css';
 
 const root = document.getElementById('root');
+const rootElement = createRoot(root);
 
-const render = (Component) => {
-  const rootElement = createRoot(root);
-  rootElement.render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <Component />
-      </Provider>
-    </React.StrictMode>
-  );
-};
+rootElement.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
+);
 
-// Use the render function to render your app
-render(App);
