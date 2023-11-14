@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
+import Toast, { showToast } from '../components/toaster/Toast';
 
 
 //Payment component for processing payment with items in the cart.
@@ -10,30 +11,31 @@ const Payment = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
 
-  // Handler function to process payment.
 
+  // Handler function to process payment.
   const handlePayment = () => {
     const orderData = {
       items: cartItems,
-      total: cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+      total: cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
     };
 
-    axios.post('http://localhost:4000/api/create-order', orderData, { responseType: 'blob' })
-      .then(response => {
+    axios
+      .post('http://localhost:4000/api/create-order', orderData, { responseType: 'blob' })
+      .then((response) => {
         // Create a Blob from the PDF Stream
-        const file = new Blob(
-          [response.data],
-          { type: 'application/pdf' }
-        );
+        const file = new Blob([response.data], { type: 'application/pdf' });
 
         const fileURL = URL.createObjectURL(file);
         window.open(fileURL);
 
         // Clear the cart after successful order processing
         dispatch({ type: 'CLEAR_CART' });
+
+        showToast('Order placed successfully!', 'success');
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error processing order:', error);
+        showToast('Error processing order. Please try again.', 'error');
       });
   };
 
@@ -56,6 +58,7 @@ const Payment = () => {
       >
         Check Out!
       </button>
+      <Toast />
     </div>
   );
 };
