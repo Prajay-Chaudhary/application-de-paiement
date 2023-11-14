@@ -3,19 +3,3 @@
 @tailwind components;
 
 @tailwind utilities;
-
-/* Style for the "Add to Cart" button */
-.cart-button {
-    background-color: #aa8714; /* Yellow background color */
-    color: #ffffff; /* White text color */
-    padding: 8px 16px; /* Adjust padding as needed */
-    border: none;
-    border-radius: 40px;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-}
-
-/* Hover effect for the button */
-.cart-button:hover {
-    background-color: #3182ce; /* Dark blue background color on hover */
-}

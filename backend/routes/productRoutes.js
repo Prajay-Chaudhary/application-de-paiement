@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
+
+// Importing the productController for handling product-related routes
 const productController = require('../controllers/productController');
-const cartRoutes = require('./cartRoutes'); // Import the new cartRoutes
 
-// Retrieve all products
-router.get('/', productController.getAllProducts);
-
-// Use the cartRoutes for the '/cart' route
-router.use('/cart', cartRoutes);
+// Defining a route to handle GET requests for fetching products
+router.get('/', productController.getProducts);
 
 module.exports = router;
-

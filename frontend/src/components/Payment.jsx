@@ -1,25 +1,45 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
 
-/**
- * Payment component for processing payment with items in the cart.
- */
+
+//Payment component for processing payment with items in the cart.
+
 const Payment = () => {
   // Get cart items from the Redux store
   const cartItems = useSelector((state) => state.cart.cartItems);
-
+  const dispatch = useDispatch();
 
   // Handler function to process payment.
 
   const handlePayment = () => {
-    // Logic to process payment
+    const orderData = {
+      items: cartItems,
+      total: cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+    };
+
+    axios.post('http://localhost:4000/api/create-order', orderData, { responseType: 'blob' })
+      .then(response => {
+        // Create a Blob from the PDF Stream
+        const file = new Blob(
+          [response.data],
+          { type: 'application/pdf' }
+        );
+
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+
+        // Clear the cart after successful order processing
+        dispatch({ type: 'CLEAR_CART' });
+      })
+      .catch(error => {
+        console.error('Error processing order:', error);
+      });
   };
 
   return (
     <div className="container mx-auto my-8 text-center">
       <h2 className="text-3xl font-bold mb-4">Payment</h2>
-
-      {/* Display items in the cart */}
       {cartItems.map((item) => (
         <div key={item.id} className="mb-4 p-4 border rounded">
           <h3 className="text-lg font-semibold">{item.name}</h3>
@@ -29,13 +49,12 @@ const Payment = () => {
         </div>
       ))}
 
-      {/* Button to initiate payment, disabled if the cart is empty */}
       <button
         className="bg-purple-500 text-white px-4 py-2 rounded"
         onClick={handlePayment}
         disabled={cartItems.length === 0}
       >
-        Proceed to Payment
+        Check Out!
       </button>
     </div>
   );
