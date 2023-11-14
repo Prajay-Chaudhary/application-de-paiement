@@ -1,0 +1,36 @@
+File to configure the database
+
+
+// config.js
+
+const mysql = require('mysql');
+
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'your_database_user',
+  password: process.env.DB_PASS || 'your_database_password',
+  database: process.env.DB_DATABASE || 'your_database_name',
+  port: process.env.DB_PORT || 3306
+});
+
+module.exports = pool;
+
+
+Instructions:
+
+Download the Configuration File:
+
+Download the config.js file from the provided link.
+Configure Database Connection:
+
+Open the config.js file in a text editor.
+Set Database Connection Details:
+
+Replace the placeholder values ('your_database_user', 'your_database_password', 'your_database_name') with the actual database connection details.
+Optionally, modify other settings such as host, port, and connectionLimit based on your requirements.
+Save the Configuration File:
+
+Save the changes to the config.js file.
+Use in the Project:
+
