@@ -42,24 +42,7 @@ const Cart = () => {
               Price: {item.price}€, Quantity: {item.quantity}
             </p>
             <div className="flex mt-2 justify-center">
-              {item.inventory > 0 && (
-                <>
-                  {/* Button to decrease quantity */}
-                  <button
-                    className="bg-blue-500 text-white px-2 py-1 mr-2 rounded"
-                    onClick={() => updateCart(item, 'decrease')}
-                  >
-                    -
-                  </button>
-                  {/* Button to increase quantity */}
-                  <button
-                    className="bg-green-500 text-white px-2 py-1 mr-2 rounded"
-                    onClick={() => updateCart(item, 'increase')}
-                  >
-                    +
-                  </button>
-                </>
-              )}
+
               {/* Button to remove item from the cart */}
               <button
                 className={`bg-red-500 text-white px-2 py-1 rounded ${item.inventory === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}

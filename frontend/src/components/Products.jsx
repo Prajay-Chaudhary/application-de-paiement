@@ -13,9 +13,16 @@ const Products = () => {
   const ADD_TO_CART = 'ADD_TO_CART';
 
   const addToCart = (product) => {
-    if (product.inventory > 0) {
+    if (product.localInventory > 0) {
       dispatch({ type: ADD_TO_CART, payload: product });
       showToast('Item added to cart');
+      setProducts((prevProducts) =>
+        prevProducts.map((prevProduct) =>
+          prevProduct.id === product.id
+            ? { ...prevProduct, localInventory: prevProduct.localInventory - 1 }
+            : prevProduct
+        )
+      );
     } else {
       console.error('Product is out of stock');
       setError('Product is out of stock');
@@ -23,34 +30,41 @@ const Products = () => {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:4000/products')
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/products');
+        const productsWithInventory = response.data.map((product) => ({
+          ...product,
+          localInventory: product.inventory,
+        }));
+        console.log('Fetched products:', productsWithInventory); // Add this line for debugging
+        setProducts(productsWithInventory);
+        setLoading(false);
+      } catch (error) {
         console.error('Error fetching products', error);
         setError('Failed to load products. Please try again.');
-      })
-      .finally(() => {
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchProducts();
+
+    return () => {
+      console.log('Products component unmounted'); // Add this line for debugging
+    };
+  }, [setProducts]);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
   const handleImageLoad = () => {
-    // Image has loaded, set loading to false
     setLoading(false);
   };
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  if (loading) return <p className="text-center">Loading...</p>;
-  if (error) return <p className="text-center">{error}</p>;
 
   return (
     <div className="container mx-auto my-8 text-center">
@@ -77,10 +91,12 @@ const Products = () => {
             />
             <h3 className="text-lg font-semibold">{product.name}</h3>
             <p className="text-gray-700">Price: {product.price}€</p>
-            <p className="text-gray-700 mb-2">In Stock: {product.inventory}</p>
+            <p className="text-gray-700 mb-2">Items remaining to add into the cart: {product.localInventory}</p>
             <button
               onClick={() => addToCart(product)}
-              className="bg-yellow-600 rounded-full p-3 text-white"
+              className={`bg-yellow-600 rounded-full p-3 text-white ${product.localInventory === 0 && 'cursor-not-allowed'
+                }`}
+              disabled={product.localInventory === 0}
             >
               Add to Cart
             </button>
